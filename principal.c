@@ -1,6 +1,6 @@
 # include "gassp72.h"
 
-void timer_callback();
+void timer_callback(void);
 extern unsigned int etat;
 int Periode_en_Tck=72000;
 
