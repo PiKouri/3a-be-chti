@@ -1,7 +1,5 @@
 
 	thumb
-		
-GPIOB_BSRR	equ	0x40010C10	; Bit Set/Reset register
 
 	area  	moncode, code, readonly
 	extern	TabCos
