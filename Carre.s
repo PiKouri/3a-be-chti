@@ -22,17 +22,16 @@ timer_callback	proc
 
 ; mise a 1 de PB1
 	mov	r1, #0x00000002
-	str	r1, [r3]
 	mov 	r2, #0x00000001
 	b	cas_0
 
 cas_1	
 ; mise a zero de PB1
 	mov	r1, #0x00020000
-	str	r1, [r3]
 	mov 	r2, #0x00000000
 
 cas_0	
+	str	r1, [r3]
 	str	r2, [r0]
 	bx	lr		; dernière instruction de la fonction
 	endp
