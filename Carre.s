@@ -17,26 +17,29 @@ timer_callback	proc
 	
 	ldr  	r0 ,=etat	;On recupère l'addresse de etat
 	ldr  	r2 ,[r0]	;Puis son contenu
-	cbnz 	r2 ,cas_1	;Si PB1 n'est pas à 0, on vas directement à cas_1
+	cbnz 	r2 ,cas_1	;Si PB1 n'est pas à 0, on vas à cas_1
+	cbz 	r2 ,cas_0	;Si PB1 est à 0, on vas à cas_0
+	bx	lr		; dernière instruction de la fonction
+	endp
 	
-; mise a 1 de PB1
-	ldr	r3, =GPIOB_BSRR
-	mov	r1, #0x00000002
-	str	r1, [r3]
-	mov 	r2, #0x00000001
-	str	r2, [r0]
-	b 	cas_0			;On saute directement à cas_0 pour ne pas remettre PB1 à 0
-	
-cas_1
+cas_1	proc
 ; mise a zero de PB1
 	ldr	r3, =GPIOB_BSRR
 	mov	r1, #0x00020000
 	str	r1, [r3]
 	mov 	r2, #0x00000000
 	str	r2, [r0]
+	bx	lr		; dernière instruction de la fonction
+	endp
 	
-cas_0
-	bx	lr	; dernière instruction de la fonction
+cas_0	proc
+	; mise a 1 de PB1
+	ldr	r3, =GPIOB_BSRR
+	mov	r1, #0x00000002
+	str	r1, [r3]
+	mov 	r2, #0x00000001
+	str	r2, [r0]
+	bx	lr		; dernière instruction de la fonction
 	endp
 ;
 	end
