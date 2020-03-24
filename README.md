@@ -4,5 +4,5 @@
   * BENASSAI Marino  
   * HOK Jean-Rémy  
   
-## Signal Obtenu  
+## Etape 1 : Signal carré Obtenu  
 ![Signal Obtenu](https://github.com/PiKouri/3a-be-chti/blob/master/Signal_Obtenu.PNG?raw=true)
