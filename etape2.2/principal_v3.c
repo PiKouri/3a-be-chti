@@ -9,7 +9,7 @@ extern int32_t TabSig;
 int N=64;
 int main(void)
 {
-M2(&TabSig,23);
+M2(&TabSig,24);
 //for (int i=0; i<64 ; ++i) {
 //	valeur = calcul(i);
 //	if (valeur > max) max = valeur; //Min = 0x3FFF0001 (notation 2.30) soit 0.9999389657750726

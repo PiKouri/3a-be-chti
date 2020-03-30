@@ -8,22 +8,20 @@
 	extern	TabSin
 
 M2	proc
-
+	push	{lr}
 	push	{r4, r5}
 	push	{r0, r1}
 	ldr	r2, =TabCos
-	push	{lr}
+	
 	bl	calcul
-	pop	{lr}
 
 	smull	r4, r5, r0, r0 ; r3,r4 = Re(k)²
 
 	pop	{r0, r1}
 
 	ldr	r2, =TabSin
-	push	{lr}
 	bl	calcul
-	pop	{lr}
+	
 ;
 	smlal	r4, r5, r0, r0 ; r0 = Im(k)²
 	
@@ -31,6 +29,7 @@ M2	proc
 
 	pop	{r4, r5}
 
+	pop	{lr}
 	bx	lr
 	endp
 
@@ -44,28 +43,28 @@ calcul	proc
 	;r6 est cos(ik)
 	;r7 est x(i)
 	;r12 est la valeur de la somme
-	push 	{r4,r5,r6}
+	push 	{r4,r5,r6, r7}
 	ldr	r3, =N
 	ldr 	r3, [r3]
 	mov 	r5, #0
 	mov	r12, #0
 	
 Boucle
-	add 	r5, #1 ;On incrémente la valeur contenue dans r12
 	
 	add	r4, r5, r5
 	ldrsh	r7,[r0,r4]
 	
 	mul	r4, r4, r1 ;calcul de ik
-;	and	r4, #63 ;modulo N=64
+	and	r4, #127 ;modulo N=64
 	ldrsh	r6, [r2, r4]
 	
 	mla	r12, r6, r7, r12
 	
+	add 	r5, #1 ;On incrémente la valeur contenue dans r12
 	cmp 	r3, r5
 	bne 	Boucle ;Si r5!=r3, on boucle
 	
-	pop 	{r4,r5,r6}
+	pop 	{r4, r5, r6, r7}
 	mov 	r0, r12
 
 
