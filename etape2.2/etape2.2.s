@@ -2,10 +2,39 @@
 	thumb
 
 	area 	moncode, code, readonly
-	export 	calcul_reel
+	export 	M2
 	extern 	N
+	extern	TabCos
+	extern	TabSin
 
-calcul_reel	proc
+M2	proc
+
+	push	{r4, r5}
+	push	{r0, r1}
+	ldr	r2, =TabCos
+	push	{lr}
+	bl	calcul
+	pop	{lr}
+
+	smull	r4, r5, r0, r0 ; r3,r4 = Re(k)²
+
+	pop	{r0, r1}
+
+	ldr	r2, =TabSin
+	push	{lr}
+	bl	calcul
+	pop	{lr}
+;
+	smlal	r4, r5, r0, r0 ; r0 = Im(k)²
+	
+	mov	r0, r5 ; on garde les 32 bits de poids fort
+
+	pop	{r4, r5}
+
+	bx	lr
+	endp
+
+calcul	proc
 	;r0 est l'adresse de base du signal
 	;r1 est la valeur de k
 	;r2 est l'adresse de la table de cos
@@ -19,6 +48,7 @@ calcul_reel	proc
 	ldr	r3, =N
 	ldr 	r3, [r3]
 	mov 	r5, #0
+	mov	r12, #0
 	
 Boucle
 	add 	r5, #1 ;On incrémente la valeur contenue dans r12
@@ -27,6 +57,7 @@ Boucle
 	ldrsh	r7,[r0,r4]
 	
 	mul	r4, r4, r1 ;calcul de ik
+;	and	r4, #63 ;modulo N=64
 	ldrsh	r6, [r2, r4]
 	
 	mla	r12, r6, r7, r12
@@ -36,6 +67,8 @@ Boucle
 	
 	pop 	{r4,r5,r6}
 	mov 	r0, r12
+
+
 	bx	lr
 	
 	endp
