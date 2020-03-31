@@ -3,9 +3,10 @@
 
 	area 	moncode, code, readonly
 	export 	M2
-	extern 	N
 	extern	TabCos
 	extern	TabSin
+
+N	EQU	64
 
 M2	proc
 	push	{lr, r4, r5, r0, r1}
@@ -25,8 +26,7 @@ M2	proc
 	
 	mov	r0, r5 ; on garde les 32 bits de poids fort
 
-	pop	{r4, r5, lr}
-	bx	lr
+	pop	{pc, r4, r5}
 	endp
 
 calcul	proc
@@ -40,31 +40,28 @@ calcul	proc
 	;r7 est x(i)
 	;r12 est la valeur de la somme
 	push 	{r4, r5, r6, r7, r8}
-	ldr	r3, =N
-	ldr 	r3, [r3]
+	mov	r3, N
 	mov 	r5, #0
 	mov	r12, #0
+	mov	r4, #0
 	
 Boucle
 	
 	ldrsh	r7,[r0,r5, LSL #1] ; r7 = x(i) (adresse = r0 + r5 * 2) 
-	
-	add	r4, r4, r1 ;calcul de ik
-	and	r4, #63 ;modulo N=64
 	ldrsh	r6, [r2, r4, LSL #1] ; r6 = cos(ik) (adresse = r2 + r4 * 2) 
 	
 	mla	r12, r6, r7, r12
-	
+		
+	add	r4, r4, r1 ;calcul de ik
 	add 	r5, #1 ;On incrémente la valeur contenue dans r12
+	and	r4, #63 ;modulo N=64
 	cmp 	r3, r5
 	bne 	Boucle ;Si r5!=r3, on boucle
 	
 	pop 	{r4, r5, r6, r7,r8}
 	mov 	r0, r12
 
-
 	bx	lr
-	
 	endp
 ;
 	end
