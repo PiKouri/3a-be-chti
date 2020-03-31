@@ -48,7 +48,7 @@ Boucle
 	
 	mla	r12, r6, r7, r12
 		
-	add	r4, r4, r1 ;calcul de ik
+	add	r4, r1 ;calcul de ik
 	and	r4, #63 ; modulo N=64
 	cmp 	r3, r0 ; 
 	bne 	Boucle ;Si r5!=r3, on boucle
