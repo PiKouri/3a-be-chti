@@ -17,3 +17,7 @@
 
 ### 2.2 Calcul DFT
 - [x] Tests vérifiés
+
+### 2.2bis Optimisation 
+* V0 : 0.00047237 s
+* V1 : 
