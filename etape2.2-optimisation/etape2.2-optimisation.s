@@ -1,4 +1,3 @@
-
 	thumb
 
 	area 	moncode, code, readonly
