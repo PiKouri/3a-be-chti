@@ -43,7 +43,7 @@ calcul	proc
 	;r6 est cos(ik)
 	;r7 est x(i)
 	;r12 est la valeur de la somme
-	push 	{r4,r5,r6, r7}
+	push 	{r4,r5,r6, r7,r8}
 	ldr	r3, =N
 	ldr 	r3, [r3]
 	mov 	r5, #0
@@ -51,12 +51,11 @@ calcul	proc
 	
 Boucle
 	
-	add	r4, r5, r5
-	ldrsh	r7,[r0,r4]
+	ldrsh	r7,[r0,r5, LSL #1]
 	
-	mul	r4, r4, r1 ;calcul de ik
-	and	r4, #127 ;modulo N=64
-	ldrsh	r6, [r2, r4]
+	mul	r4, r5, r1 ;calcul de ik
+	and	r4, #63 ;modulo N=64
+	ldrsh	r6, [r2, r4, LSL #1]
 	
 	mla	r12, r6, r7, r12
 	
@@ -64,7 +63,7 @@ Boucle
 	cmp 	r3, r5
 	bne 	Boucle ;Si r5!=r3, on boucle
 	
-	pop 	{r4, r5, r6, r7}
+	pop 	{r4, r5, r6, r7,r8}
 	mov 	r0, r12
 
 
