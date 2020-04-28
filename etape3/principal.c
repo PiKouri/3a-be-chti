@@ -7,12 +7,12 @@ int32_t calculM2TIR() {
 	return  pow(50 * 1.241 * 64 /2, 2)/4;
 }
 
-short dma_buf [64];
+int32_t dma_buf [64];
 int occurences [6];
 int occurences_min = 3; // 3, arbitraire
 int valeurk [6] = {17, 18, 19, 20, 23, 24};
 int32_t M2TIR;
-int SYSTICK_PER = 14400;
+int SYSTICK_PER = 14400; // Pour avoir une période de 5 ms
 
 int32_t M2(int32_t* adresse_signal, int k);
 extern int32_t TabSig;
@@ -23,8 +23,17 @@ void sys_callback() {
 	Wait_On_End_Of_DMA1();
 	Stop_DMA1;
 	for (int i=0; i<6; i++) {
-		if (M2(&TabSig, valeurk[i]) >= M2TIR) occurences[i]++;
+		if (M2(dma_buf, valeurk[i]) >= M2TIR) occurences[i]++;
+		else occurences[i] = 0;
 	}
+	int i=0;
+	int laser_detecte = 0;	
+	while (i<6 && !laser_detecte) { // Vérifie qu'1 laser est allumé au moins
+		laser_detecte = occurences[i]>=occurences_min;
+		i++;
+	}
+	if (laser_detecte) GPIO_Set(GPIOB, 14); // Allume la LED
+	else GPIO_Clear(GPIOB, 14);
 }
 
 int main(void) {
@@ -42,7 +51,7 @@ while	(1)
 		GPIO_Configure(GPIOB, 14, OUTPUT, OUTPUT_PPULL);
 
 		// activation ADC, sampling time 1us
-		Init_TimingADC_ActiveADC_ff( ADC1, 72 );
+		Init_TimingADC_ActiveADC_ff( ADC1, 82 ); // 72 par défaut
 		Single_Channel_ADC( ADC1, 2 );
 		// Déclenchement ADC par timer2, periode (72MHz/320kHz)ticks
 		Init_Conversion_On_Trig_Timer_ff( ADC1, TIM2_CC2, 225 );
@@ -57,13 +66,5 @@ while	(1)
 		SysTick_On;
 		SysTick_Enable_IT;
 		
-		int i=0;
-		int laser_detecte = 0;
-		while (i<6 && !laser_detecte) { // Vérifie qu'1 laser est allumé au moins
-			laser_detecte = occurences[i]>=occurences_min;
-			i++;
-		}
-		if (laser_detecte) GPIO_Set(GPIOB, 14); // Allume la LED
-		else GPIO_Clear(GPIOB, 14);
 	}
 }
